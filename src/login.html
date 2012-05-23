@@ -1,0 +1,52 @@
+﻿<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Javascript RSA - Login Test</title>
+<script type="text/javascript" src="jsbn.js"></script>
+<script type="text/javascript" src="rsa.js"></script>
+<script type="text/javascript" src="sha1.js"></script>
+<script type="text/javascript">
+var $pem = "-----BEGIN PUBLIC KEY-----MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMYQWDqtLgDKlQvWzacGeBMQpbicd/uoXAvgLNpFZLM7zuYFDhrYncRsl8LIHK0K3f7e1aFmUVgM4LrKU2WFIw0CAwEAAQ==-----END PUBLIC KEY-----";
+var $key = RSA.getPublicKey($pem);
+function assemble() {
+var password_field = document.getElementById("password");
+var data_field = document.getElementById("data");
+data_field.value=sha1(password_field.value) + (new Date().getTime());
+}
+function encrypt() {
+var login_field = document.getElementById("login");
+var data_field = document.getElementById("data");
+login_field.value=RSA.encrypt(data_field.value, $key);
+}
+</script>
+
+</head>
+
+<body>
+<h1>Javascript RSA - Login Test</h1>
+This test is an example to perform user login using javascript RSA. <br/>
+<ol>
+<li>The user type in E-mail as username and a password.</li>
+<li>The client-side javascript hashes the password using SHA-1.</li>
+<li>The client-side javascript attach a timestamp to the end of the hash.</li>
+<li>The client-side javascript encrypt the whole thing with the RSA public key.</li>
+
+<li>The browser submits the encrypted data.</li>
+</ol>
+<strong>For testing purpose, the credential to login is any E-mail with the password "test".</strong><br/><br/>
+
+<form action="login.php" method="post">
+Email:<br/>
+<input name="email" type="text" size="40"/><br/>
+Password:<br/>
+<input id="password" type="password" size="40"/><br/>
+<input type="button" onclick="assemble()" value="1. Assemble"/><br/>
+<textarea id="data" readonly="readonly" cols="50" rows="2"></textarea><br/>
+<input type="button" onclick="encrypt()" value="2. Encrypt"/><br/>
+
+<textarea id="login" name="login" readonly="readonly" cols="50" rows="10"></textarea><br/>
+<input name="submit" type="submit" value="3. Login" size="10"/>
+</form>
+</body>
+
+</html>
