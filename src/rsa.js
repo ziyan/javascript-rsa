@@ -219,11 +219,14 @@ var RSA = {
     },
     encrypt: function($data, $pubkey) {
         if (!$pubkey) return false;
-        $data = this.pkcs1pad2($data,($pubkey.modulus.bitLength()+7)>>3);
+        var bytes = ($pubkey.modulus.bitLength()+7)>>3;
+        $data = this.pkcs1pad2($data,bytes);
         if(!$data) return false;
         $data = $data.modPowInt($pubkey.encryptionExponent, $pubkey.modulus);
         if(!$data) return false;
         $data = $data.toString(16);
+        while ($data.length < bytes*2)
+            $data = '0' + $data;
         return Base64.encode(Hex.decode($data));
     },
     pkcs1pad2: function($data, $keysize) {
